@@ -2,8 +2,8 @@ name: Daily commit
 
 on:
   schedule:
-    # 每天 UTC 00:00 触发；如需其它时间/时区请告诉我
-    - cron: '0 0 * * *'
+    # 每天 UTC 12:00 触发；即北京时间20:00
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 permissions:
