@@ -6,7 +6,7 @@
 功能
 - 工作流：.github/workflows/daily-commit.yml
 - 每次运行会向 `commits.log` 文件追加一行时间戳并提交到仓库
-- 默认每日 UTC 00:00 触发（可在 workflow 的 cron 中调整）
+- 默认每日 UTC 12:00 触发（可在 workflow 的 cron 中调整）
 - 可以通过 workflow_dispatch 手动触发测试
 
 使用说明
