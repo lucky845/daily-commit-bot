@@ -1,0 +1,34 @@
+name: Daily commit
+
+on:
+  schedule:
+    # 每天 UTC 00:00 触发；如需其它时间/时区请告诉我
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daily-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Configure git user
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Append timestamp to commits.log
+        run: |
+          TIMESTAMP="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "Commit from workflow at $TIMESTAMP" >> commits.log
+          git add commits.log
+          git commit -m "chore(daily): update commits.log — $(date -u +"%Y-%m-%d")" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push
