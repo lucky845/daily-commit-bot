@@ -8,6 +8,8 @@
 - 每次运行会向 `commits.log` 文件追加一行时间戳并提交到仓库
 - 默认每日 UTC 12:00 触发（可在 workflow 的 cron 中调整）
 - 可以通过 workflow_dispatch 手动触发测试
+- 每月自动清理：.github/workflows/clear-log-monthly.yml
+- 每月初自动清空 `commits.log` 文件以防止文件过大
 
 使用说明
 1. 在 GitHub 上创建新仓库（见下方步骤 A）。仓库名我默认为 `daily-commit-bot`（你可以在创建时改名）。

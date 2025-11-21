@@ -1,0 +1,49 @@
+name: Clear commits.log monthly
+
+on:
+  schedule:
+    # 每月1日 UTC 00:00 运行
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clear-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Configure git user
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Check if today is the first day of the month and clear log
+        run: |
+          # 获取昨天的日期以判断是否是上个月的最后一天
+          YESTERDAY=$(date -d "yesterday" +"%Y-%m-%d")
+          TODAY=$(date +"%Y-%m-%d")
+          
+          # 获取昨天和今天的月份
+          YESTERDAY_MONTH=$(date -d "$YESTERDAY" +"%m")
+          TODAY_MONTH=$(date -d "$TODAY" +"%m")
+          
+          # 如果月份不同，说明今天是某月的第一天，昨天是上个月的最后一天
+          if [ "$YESTERDAY_MONTH" != "$TODAY_MONTH" ]; then
+            echo "Today is the first day of the month. Clearing commits.log..."
+            # 清空 commits.log 文件
+            > commits.log
+            git add commits.log
+            git commit -m "chore(monthly): clear commits.log"
+            echo "Log cleared successfully."
+          else
+            echo "Not the first day of the month. Nothing to do."
+          fi
+
+      - name: Push changes
+        run: git push
